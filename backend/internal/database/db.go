@@ -22,11 +22,11 @@ type Clients struct {
 }
 
 func InitDatabases(cfg *config.Config) (*Clients, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
 	log.Printf("Connecting to MongoDB at: %s", maskURI(cfg.MongoURI))
-	mongoOpts := options.Client().ApplyURI(cfg.MongoURI).SetServerSelectionTimeout(10 * time.Second)
+	mongoOpts := options.Client().ApplyURI(cfg.MongoURI).SetServerSelectionTimeout(15 * time.Second)
 	mongoClient, err := mongo.Connect(ctx, mongoOpts)
 	
 	var db *mongo.Database

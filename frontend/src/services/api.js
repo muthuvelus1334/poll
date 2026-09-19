@@ -1,5 +1,30 @@
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8080';
-export const WS_BASE = import.meta.env.VITE_WS_URL || 'ws://localhost:8080';
+// Clean and normalize base URL to prevent double slashes or accidental /api duplications
+function getCleanApiBase() {
+  let url = (import.meta.env.VITE_API_URL || '').trim();
+  if (!url) {
+    return 'http://localhost:8080';
+  }
+  url = url.replace(/\/+$/, '');
+  url = url.replace(/\/api$/, '');
+  return url;
+}
+
+function getCleanWsBase() {
+  let url = (import.meta.env.VITE_WS_URL || '').trim();
+  if (!url) {
+    const apiBase = getCleanApiBase();
+    if (apiBase.startsWith('http')) {
+      return apiBase.replace(/^http/, 'ws');
+    }
+    return 'ws://localhost:8080';
+  }
+  url = url.replace(/\/+$/, '');
+  url = url.replace(/\/api$/, '');
+  return url;
+}
+
+const API_BASE = getCleanApiBase();
+export const WS_BASE = getCleanWsBase();
 
 // Generate or retrieve persistent anonymous voter fingerprint
 export const getVoterFingerprint = () => {
